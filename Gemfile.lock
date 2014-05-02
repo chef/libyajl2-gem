@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    libyajl2 (0.0.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rake (10.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.5)
+  libyajl2!
+  rake
