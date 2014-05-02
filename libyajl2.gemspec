@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.licenses       = ["Apache 2.0"]
 
   spec.files         = `git ls-files -z`.split("\x0") +
-                       `find ext/libyajl2/vendor/yajl -type f -print0`.split("\x0")
+                       `cd ext/libyajl2/vendor/yajl && git ls-files -z`.split("\x0").map {|p| p.sub!(/^/, 'ext/libyajl2/vendor/yajl/') }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
