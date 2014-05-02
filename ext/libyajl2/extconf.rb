@@ -26,10 +26,12 @@ module Libyajl2Build
   end
 
   def self.configure_cmd
+    # NB: this is not a gnu configure command
     args = %W[
       sh
       #{configure}
-      --prefix=#{prefix}
+      -p
+      #{prefix}
     ]
   end
 
@@ -51,9 +53,7 @@ module Libyajl2Build
     puts `env`
     puts configure_cmd
     system(*configure_cmd) &&
-      system("make", "clean") &&
-      system("make", "-j", "5") &&
-      system("make", "install")
+      system("make", "-j", "5", "install")
   end
 
   def self.run
