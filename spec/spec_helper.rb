@@ -1,7 +1,8 @@
-#$: << File.expand_path(File.join(File.dirname( __FILE__ ), "../lib"))
+$: << File.expand_path(File.join(File.dirname( __FILE__ ), "../lib"))
+
+require 'libyajl2'
 
 RSpec.configure do |c|
-#  c.filter_run_excluding :ruby_gte_19 => true unless RUBY_VERSION.to_f >= 1.9
 
   c.order = 'random'
 
