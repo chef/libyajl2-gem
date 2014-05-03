@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'ffi'
 
-module Libyajl_Test_FFI
+module LibyajlTestFFI
   extend ::FFI::Library
 
   libname = ::FFI.map_library_name("yajl")
@@ -15,7 +15,6 @@ end
 
 describe "when loading the library with FFI" do
   it "we can get back an FFI::Pointer from yajl_gen_alloc" do
-    expect(Libyajl_Test_FFI.yajl_gen_alloc(nil)).to be_an_instance_of(FFI::Pointer)
+    expect(LibyajlTestFFI.yajl_gen_alloc(nil)).to be_an_instance_of(FFI::Pointer)
   end
 end
-

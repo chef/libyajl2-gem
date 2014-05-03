@@ -10,7 +10,7 @@ module Libyajl2Build
   PREFIX = File.expand_path("../../../lib/libyajl2/vendored-libyajl2", __FILE__).freeze
 
   def self.windows?
-   !!(RUBY_PLATFORM =~ /mswin|mingw|windows/)
+    !!(RUBY_PLATFORM =~ /mswin|mingw|windows/)
   end
 
   def self.libyajl2_vendor_dir
@@ -27,7 +27,7 @@ module Libyajl2Build
 
   def self.configure_cmd
     # NB: this is not a gnu configure command
-    args = %W[
+    %W[
       sh
       #{configure}
       -p
@@ -61,7 +61,6 @@ module Libyajl2Build
       run_build_commands or raise BuildError, "Failed to build libyajl2 library."
     end
   end
-
 end
 
 Libyajl2Build.run

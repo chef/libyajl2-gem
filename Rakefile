@@ -4,9 +4,7 @@ require 'rake'
 require 'rubygems/package_task'
 require 'rspec/core/rake_task'
 
-task :default => :spec
-
-GEM_NAME="libyajl2"
+GEM_NAME = "libyajl2"
 
 gemspec = eval(File.read('libyajl2.gemspec'))
 
@@ -14,7 +12,9 @@ Gem::PackageTask.new(gemspec) do |pkg|
   pkg.need_tar = true
 end
 
-RSpec::Core::RakeTask.new(:spec)
+#
+# build tasks
+#
 
 desc "repackage and install #{GEM_NAME}-#{Libyajl2::VERSION}.gem"
 task :install => :repackage do
@@ -39,3 +39,74 @@ task :clean do
   sh "git clean -fdx"
 end
 
+#
+# test tasks
+#
+
+RSpec::Core::RakeTask.new(:spec)
+
+namespace :integration do
+  begin
+    require 'kitchen'
+  rescue LoadError
+    task :vagrant do
+      puts "kitchen gem is not available"
+    end
+    task :cloud do
+      puts "kitchen gem is not available"
+    end
+  else
+    desc 'Run Test Kitchen with Vagrant'
+    task :vagrant do
+      Kitchen.logger = Kitchen.default_file_logger
+      Kitchen::Config.new.instances.each do |instance|
+        instance.test(:always)
+      end
+    end
+
+    desc 'Run Test Kitchen with cloud plugins'
+    task :cloud do
+      if ENV['TRAVIS_PULL_REQUEST'] != 'true'
+        ENV['KITCHEN_YAML'] = '.kitchen.cloud.yml'
+        sh "kitchen test --concurrency 4"
+      end
+    end
+  end
+end
+
+namespace :style do
+  desc 'Run Ruby style checks'
+  begin
+    require 'rubocop/rake_task'
+  rescue LoadError
+    task :rubocop do
+      puts "rubocop gem is not available"
+    end
+  else
+    Rubocop::RakeTask.new(:rubocop) do |t|
+      t.fail_on_error = false
+    end
+  end
+
+  desc 'Run Ruby smell checks'
+  begin
+    require 'reek/rake/task'
+  rescue LoadError
+    task :reek do
+      puts "reek gem is not available"
+    end
+  else
+    Reek::Rake::Task.new(:reek) do |t|
+      t.fail_on_error = false
+      t.config_files = '.reek.yml'
+    end
+  end
+end
+
+desc 'Run all style checks'
+task :style => ['style:rubocop', 'style:reek']
+
+desc 'Run all tests on Travis'
+task :travis => ['style', 'spec', 'integration:cloud']
+
+task :default => ['style', 'spec', 'integration:vagrant']

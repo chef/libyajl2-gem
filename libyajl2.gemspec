@@ -14,14 +14,15 @@ Gem::Specification.new do |spec|
   spec.licenses       = ["Apache 2.0"]
 
   spec.files         = `git ls-files -z`.split("\x0") +
-                       `cd ext/libyajl2/vendor/yajl && git ls-files -z`.split("\x0").map {|p| p.sub!(/^/, 'ext/libyajl2/vendor/yajl/') }
+                       `cd ext/libyajl2/vendor/yajl && git ls-files -z`.split("\x0").map { |p| p.sub!(/^/, 'ext/libyajl2/vendor/yajl/') }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.extensions = Dir["ext/**/extconf.rb"]
 
-  spec.add_development_dependency "bundler", "~> 1.5"
+  # required for 'rake spec'
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 2.14"
   spec.add_development_dependency "ffi", "~> 1.9"
