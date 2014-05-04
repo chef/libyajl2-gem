@@ -45,31 +45,42 @@ end
 
 RSpec::Core::RakeTask.new(:spec)
 
-namespace :integration do
-  begin
-    require 'kitchen'
-  rescue LoadError
-    task :vagrant do
-      puts "kitchen gem is not available"
-    end
-    task :cloud do
-      puts "kitchen gem is not available"
-    end
-  else
-    desc 'Run Test Kitchen with Vagrant'
-    task :vagrant do
-      Kitchen.logger = Kitchen.default_file_logger
-      Kitchen::Config.new.instances.each do |instance|
-        instance.test(:always)
+if RUBY_VERSION.to_f >= 1.9
+  namespace :integration do
+    begin
+      require 'kitchen'
+    rescue LoadError
+      task :vagrant do
+        puts "test-kitchen gem is not installed"
       end
-    end
+      task :cloud do
+        puts "test-kitchen gem is not installed"
+      end
+    else
+      desc 'Run Test Kitchen with Vagrant'
+      task :vagrant do
+        Kitchen.logger = Kitchen.default_file_logger
+        Kitchen::Config.new.instances.each do |instance|
+          instance.test(:always)
+        end
+      end
 
-    desc 'Run Test Kitchen with cloud plugins'
-    task :cloud do
-      if ENV['TRAVIS_PULL_REQUEST'] != 'true'
-        ENV['KITCHEN_YAML'] = '.kitchen.cloud.yml'
-        sh "kitchen test --concurrency 4"
+      desc 'Run Test Kitchen with cloud plugins'
+      task :cloud do
+        if ENV['TRAVIS_PULL_REQUEST'] != 'true'
+          ENV['KITCHEN_YAML'] = '.kitchen.cloud.yml'
+          sh "kitchen test --concurrency 4"
+        end
       end
+    end
+  end
+else
+  namespace :integration do
+    task :vagrant do
+      puts "test-kitchen unsupported on ruby 1.8"
+    end
+    task :cloud do
+      puts "test-kitchen unsupported on ruby 1.8"
     end
   end
 end
@@ -80,7 +91,7 @@ namespace :style do
     require 'rubocop/rake_task'
   rescue LoadError
     task :rubocop do
-      puts "rubocop gem is not available"
+      puts "rubocop gem is not installed"
     end
   else
     Rubocop::RakeTask.new(:rubocop) do |t|
@@ -93,7 +104,7 @@ namespace :style do
     require 'reek/rake/task'
   rescue LoadError
     task :reek do
-      puts "reek gem is not available"
+      puts "reek gem is not installed"
     end
   else
     Reek::Rake::Task.new(:reek) do |t|
