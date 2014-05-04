@@ -74,6 +74,34 @@ if RUBY_VERSION.to_f >= 1.9
       end
     end
   end
+  namespace :style do
+    desc 'Run Ruby style checks'
+    begin
+      require 'rubocop/rake_task'
+    rescue LoadError
+      task :rubocop do
+        puts "rubocop gem is not installed"
+      end
+    else
+      Rubocop::RakeTask.new(:rubocop) do |t|
+        t.fail_on_error = false
+      end
+    end
+
+    desc 'Run Ruby smell checks'
+    begin
+      require 'reek/rake/task'
+    rescue LoadError
+      task :reek do
+        puts "reek gem is not installed"
+      end
+    else
+      Reek::Rake::Task.new(:reek) do |t|
+        t.fail_on_error = false
+        t.config_files = '.reek.yml'
+      end
+    end
+  end
 else
   namespace :integration do
     task :vagrant do
@@ -83,36 +111,16 @@ else
       puts "test-kitchen unsupported on ruby 1.8"
     end
   end
-end
-
-namespace :style do
-  desc 'Run Ruby style checks'
-  begin
-    require 'rubocop/rake_task'
-  rescue LoadError
+  namespace :style do
     task :rubocop do
-      puts "rubocop gem is not installed"
+      puts "rubocop unsupported on ruby 1.8"
     end
-  else
-    Rubocop::RakeTask.new(:rubocop) do |t|
-      t.fail_on_error = false
-    end
-  end
-
-  desc 'Run Ruby smell checks'
-  begin
-    require 'reek/rake/task'
-  rescue LoadError
     task :reek do
-      puts "reek gem is not installed"
-    end
-  else
-    Reek::Rake::Task.new(:reek) do |t|
-      t.fail_on_error = false
-      t.config_files = '.reek.yml'
+      puts "reek unsupported on ruby 1.8"
     end
   end
 end
+
 
 desc 'Run all style checks'
 task :style => ['style:rubocop', 'style:reek']
