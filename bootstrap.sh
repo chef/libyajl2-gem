@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# bootstrap.sh file for test-kitchen shell provisioner to run tests on 
+# remote server.
+#
 
 set -e
 set -x
@@ -19,9 +23,11 @@ compile_rubygems() {
 case $platform in
   "ubuntu")
     export DEBIAN_FRONTEND=noninteractive
+    apt-get update
     apt-get -y -y install bc
-    ubuntu_before_12_04=`echo "$platform_version >= 12.04" | bc`
-    if [ $ubuntu_before_12_04 ]; then
+    ubuntu_before_12_04=`echo "$platform_version < 12.04" | bc`
+    ubuntu_before_14_04=`echo "$platform_version < 14.04" | bc`
+    if [ "x$ubuntu_before_12_04" = "x1" ]; then
       apt-get -q -y install ruby1.8 ruby1.8-dev rubygems1.8 libopenssl-ruby1.8
       apt-get -q -y install git-core cmake build-essential wget
       update-alternatives --install /usr/bin/ruby ruby /usr/bin/ruby1.8 500
@@ -29,8 +35,15 @@ case $platform in
       update-alternatives --config ruby
       update-alternatives --config gem
       compile_rubygems
+    elif [ "x$ubuntu_before_14_04" = "x1" ]; then
+      apt-get -q -y purge ruby1.8 ruby1.8-dev rubygems1.8 libopenssl-ruby1.8
+      apt-get -q -y install ruby1.9.1 ruby1.9.1-dev rubygems1.9.1 libopenssl-ruby1.9.1
+      apt-get -q -y install git cmake build-essential
+      update-alternatives --config ruby
+      update-alternatives --config gem
     else
-      apt-get -q -y install ruby-1.9 ruby1.9.1-dev
+      apt-get -q -y purge ruby1.8
+      apt-get -q -y install ruby1.9.1 ruby1.9.1-dev rubygems1.9.1 libopenssl-ruby1.9.1
       apt-get -q -y install git cmake build-essential
     fi
     ;;
