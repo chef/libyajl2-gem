@@ -1,0 +1,27 @@
+
+---
+settings:
+  concurrency: 4
+
+# The following env vars need to be set for DO:
+#
+# - DIGITALOCEAN_CLIENT_ID
+# - DIGITALOCEAN_API_KEY
+# - SSH_KEY_IDS
+#
+driver:
+  name: digitalocean
+
+provisioner:
+  name: shell
+  data_path: .
+
+platforms:
+  - name: ubuntu-1004
+    driver_config:
+      image_id: 14097
+      flavor_id: 63
+      region_id: 4
+
+suites:
+  - name: default
