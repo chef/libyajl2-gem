@@ -10,13 +10,13 @@ Gem::Specification.new do |spec|
   spec.email         = ["lamont@scriptkiddie.org"]
   spec.summary       = %q{Installs a vendored copy of libyajl2 for distributions which lack it}
   spec.description   = spec.summary
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/lamont-granquist/libyajl2-gem"
   spec.licenses       = ["Apache 2.0"]
 
   spec.files         = `git ls-files -z`.split("\x0") +
                        `cd ext/libyajl2/vendor/yajl && git ls-files -z`.split("\x0").map { |p| p.sub!(/^/, 'ext/libyajl2/vendor/yajl/') }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.test_files    = spec.files.grep(%r{^spec/})
   spec.require_paths = ["lib"]
 
   spec.extensions = Dir["ext/**/extconf.rb"]
