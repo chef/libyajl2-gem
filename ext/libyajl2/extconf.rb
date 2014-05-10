@@ -37,8 +37,8 @@ module Libyajl2Build
 
   def self.setup_env
     if windows?
-      ENV['CC'] = 'gcc'
-      ENV['CXX'] = 'g++'
+      ENV['CC'] = 'gcc.exe'
+      ENV['CXX'] = 'g++.exe'
     end
   end
 
