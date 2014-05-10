@@ -37,8 +37,11 @@ module Libyajl2Build
 
   def self.setup_env
     if windows?
-      ENV['CC'] = 'gcc.exe'
-      ENV['CXX'] = 'g++.exe'
+      ENV['PATH']      ||= 'C:\Ruby\DevKit\bin;C:\Ruby\DevKit\mingw\bin;' + ENV['PATH']
+      ENV['RI_DEVKIT'] ||= 'C:\Ruby\DevKit'
+      ENV['CC']        ||= 'gcc'
+      ENV['CPP']       ||= 'cpp'
+      ENV['CXX']       ||= 'g++'
     end
   end
 
