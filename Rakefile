@@ -43,7 +43,7 @@ end
 #end
 
 Rake::ExtensionTask.new('libyajl', gemspec) do |ext|
-  ext.lib_dir = 'lib/libyajl2/vendored-libyajl2'
+  ext.lib_dir = 'lib/libyajl2/vendored-libyajl2/lib'
   ext.ext_dir = 'ext/libyajl2'
 end
 
