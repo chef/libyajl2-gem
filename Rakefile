@@ -5,6 +5,7 @@ require 'rake'
 
 require 'rubygems/package_task'
 require 'rspec/core/rake_task'
+require 'rake/extensiontask'
 
 GEM_NAME = "libyajl2"
 
@@ -18,27 +19,32 @@ end
 # build tasks
 #
 
-desc "repackage and install #{GEM_NAME}-#{Libyajl2::VERSION}.gem"
-task :install => :repackage do
-  sh %{gem install pkg/#{GEM_NAME}-#{Libyajl2::VERSION}.gem --no-rdoc --no-ri}
-end
+#desc "repackage and install #{GEM_NAME}-#{Libyajl2::VERSION}.gem"
+#task :install => :repackage do
+#  sh %{gem install pkg/#{GEM_NAME}-#{Libyajl2::VERSION}.gem --no-rdoc --no-ri}
+#end
+#
+#desc "uninstall #{GEM_NAME}-#{Libyajl2::VERSION}.gem"
+#task :uninstall do
+#  sh %{gem uninstall #{GEM_NAME} -x -v #{Libyajl2::VERSION} }
+#end
+#
+#desc "compile native gem"
+#task :compile do
+#  cd "ext/libyajl2"
+#  ruby "extconf.rb"
+#end
+#
+#desc "clean the git repo"
+#task :clean do
+#  sh "git clean -fdx"
+#  cd "ext/libyajl2/vendor/yajl"
+#  sh "git clean -fdx"
+#end
 
-desc "uninstall #{GEM_NAME}-#{Libyajl2::VERSION}.gem"
-task :uninstall do
-  sh %{gem uninstall #{GEM_NAME} -x -v #{Libyajl2::VERSION} }
-end
-
-desc "compile native gem"
-task :compile do
-  cd "ext/libyajl2"
-  ruby "extconf.rb"
-end
-
-desc "clean the git repo"
-task :clean do
-  sh "git clean -fdx"
-  cd "ext/libyajl2/vendor/yajl"
-  sh "git clean -fdx"
+Rake::ExtensionTask.new('libyajl', gemspec) do |ext|
+  ext.lib_dir = 'lib/libyajl2/vendored-libyajl2'
+  ext.ext_dir = 'ext/libyajl2'
 end
 
 # FIXME: need a rake task to update the git submodule and need to do that before shipping
