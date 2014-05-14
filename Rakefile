@@ -144,9 +144,9 @@ desc 'Run all style checks'
 task :style => ['style:rubocop', 'style:reek']
 
 desc 'Run style + spec tests by default on travis'
-task :travis => ['style', 'spec']
+task :travis => ['compile', 'spec', 'style']
 
 desc 'Run style, spec and test kichen on travis'
-task :travis_all => ['style', 'spec', 'integration:cloud']
+task :travis_all => ['compile', 'spec', 'integration:cloud', 'style']
 
-task :default => ['style', 'spec', 'integration:vagrant']
+task :default => ['compile', 'spec', 'integration:vagrant', 'style']
