@@ -23,20 +23,25 @@ module Libyajl2Build
   end
 
   def self.setup_env
+    if config['CC'] =~ /gcc/ || config['CC'] =~ /clang/
+      config['CFLAGS'] << " -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes"
+    end
   end
 
   # for mkmf.rb compat
-  CONFIG = RbConfig::MAKEFILE_CONFIG
+  def self.config
+    @config ||= RbConfig::MAKEFILE_CONFIG.dup
+  end
 
   def self.mkintpath(path)
-    case CONFIG['build_os']
+    case config['build_os']
     when 'mingw32'
       path = path.dup
       path.tr!('\\', '/')
       path.sub!(/\A([A-Za-z]):(?=\/)/, '/\1')
       path
     when 'cygwin'
-      if CONFIG['target_os'] != 'cygwin'
+      if config['target_os'] != 'cygwin'
         IO.popen(["cygpath", "-u", path], &:read).chomp
       else
         path
@@ -90,7 +95,7 @@ ECHO = $(ECHO1:0=@echo)
 #### Start of system configuration section. ####
 
 srcdir = .
-prefix = #{mkintpath(CONFIG['prefix'])}
+prefix = #{mkintpath(config['prefix'])}
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
 exec_prefix = $(prefix)
 sitearchdir = $(sitelibdir)/$(sitearch)
@@ -98,36 +103,36 @@ sitelibdir = $(sitedir)/$(ruby_version)
 sitedir = $(rubylibprefix)/site_ruby
 libdir = $(exec_prefix)/lib
 
-CC = #{CONFIG['CC']}
+CC = #{config['CC']}
 COUTFLAG = '-o'
 
-cflags   = #{CONFIG['cflags']}
-optflags = #{CONFIG['optflags']}
-debugflags = #{CONFIG['debugflags']}
-warnflags = #{CONFIG['warnflags']}
-CCDLFLAGS = #{CONFIG['CCDLFLAGS']}
-CFLAGS   = $(CCDLFLAGS) -I#{libyajl2_vendor_dir}/src/api -I. #{CONFIG['CFLAGS']} $(ARCH_FLAG)
+cflags   = #{config['cflags']}
+optflags = #{config['optflags']}
+debugflags = #{config['debugflags']}
+warnflags = #{config['warnflags']}
+CCDLFLAGS = #{config['CCDLFLAGS']}
+CFLAGS   = $(CCDLFLAGS) -I#{libyajl2_vendor_dir}/src/api -I. #{config['CFLAGS']} $(ARCH_FLAG)
 INCFLAGS = -I. -I$(srcdir)
-DEFS     = #{CONFIG['DEFS']}
-CPPFLAGS = #{CONFIG['CPPFLAGS']} $(cppflags)
-ldflags  = #{CONFIG['LDFLAGS']}
+DEFS     = #{config['DEFS']}
+CPPFLAGS = #{config['CPPFLAGS']} $(cppflags)
+ldflags  = #{config['LDFLAGS']}
 #dldflags = -Wl,-undefined,dynamic_lookup -Wl,-multiply_defined,suppress
-dldflags = #{CONFIG['DLDFLAGS']} #{CONFIG['EXTDLDFLAGS']}
-ARCH_FLAG = #{CONFIG['ARCH_FLAG']}
+dldflags = #{config['DLDFLAGS']} #{config['EXTDLDFLAGS']}
+ARCH_FLAG = #{config['ARCH_FLAG']}
 DLDFLAGS = $(ldflags) $(dldflags) $(ARCH_FLAG)
-LDSHARED = #{CONFIG['LDSHARED']}
+LDSHARED = #{config['LDSHARED']}
 
-RUBY_INSTALL_NAME = #{CONFIG['RUBY_INSTALL_NAME']}
-RUBY_SO_NAME = #{CONFIG['RUBY_SO_NAME']}
-RUBYW_INSTALL_NAME = #{CONFIG['RUBYW_INSTALL_NAME']}
-RUBY_VERSION_NAME = #{CONFIG['RUBY_VERSION_NAME']}
-RUBYW_BASE_NAME = #{CONFIG['RUBYW_BASE_NAME']}
-RUBY_BASE_NAME = #{CONFIG['RUBY_BASE_NAME']}
+RUBY_INSTALL_NAME = #{config['RUBY_INSTALL_NAME']}
+RUBY_SO_NAME = #{config['RUBY_SO_NAME']}
+RUBYW_INSTALL_NAME = #{config['RUBYW_INSTALL_NAME']}
+RUBY_VERSION_NAME = #{config['RUBY_VERSION_NAME']}
+RUBYW_BASE_NAME = #{config['RUBYW_BASE_NAME']}
+RUBY_BASE_NAME = #{config['RUBY_BASE_NAME']}
 
-arch = #{CONFIG['arch']}
-sitearch = #{CONFIG['sitearch']}
+arch = #{config['arch']}
+sitearch = #{config['sitearch']}
 ruby_version = #{RbConfig::CONFIG['ruby_version']}
-ruby = #{File.join(RbConfig::CONFIG["bindir"], CONFIG["ruby_install_name"])}
+ruby = #{File.join(RbConfig::CONFIG["bindir"], config["ruby_install_name"])}
 RUBY = $(ruby)
 
 RM = $(RUBY) -run -e rm -- -f
@@ -144,13 +149,13 @@ LIBPATH = -L. -L$(libdir)
 CLEANFILES = mkmf.log
 
 target_prefix =
-LIBS =  #{CONFIG['LIBS']} #{CONFIG['DLDLIBS']}
+LIBS =  #{config['LIBS']} #{config['DLDLIBS']}
 ORIG_SRCS = yajl.c yajl_alloc.c yajl_buf.c yajl_encode.c yajl_gen.c yajl_lex.c yajl_parser.c yajl_tree.c yajl_version.c
 SRCS = $(ORIG_SRCS)
 OBJS = yajl.o yajl_alloc.o yajl_buf.o yajl_encode.o yajl_gen.o yajl_lex.o yajl_parser.o yajl_tree.o yajl_version.o
 HDRS = yajl_alloc.h yajl_buf.h yajl_bytestack.h yajl_encode.h yajl_lex.h yajl_parser.h
 TARGET = libyajl
-DLLIB = $(TARGET).#{CONFIG['DLEXT']}
+DLLIB = $(TARGET).#{config['DLEXT']}
 
 TIMESTAMP_DIR = .
 RUBYARCHDIR   = $(sitearchdir)$(target_prefix)
@@ -203,7 +208,7 @@ EOF
     File.open("Makefile", "w+") do |f|
       f.write <<EOF
 TARGET = libyajl
-DLLIB = $(TARGET).#{CONFIG['DLEXT']}
+DLLIB = $(TARGET).#{config['DLEXT']}
 all:
 \tcd #{libyajl2_vendor_dir}/src && make
 \tcp #{libyajl2_vendor_dir}/src/$(DLLIB) .
