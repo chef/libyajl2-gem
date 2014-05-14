@@ -99,8 +99,7 @@ sitedir = $(rubylibprefix)/site_ruby
 libdir = $(exec_prefix)/lib
 
 CC = #{CONFIG['CC']}
-empty =
-COUTFLAG = #{CONFIG['COUTFLAG']}$(empty)
+COUTFLAG = '-o'
 
 cflags   = #{CONFIG['cflags']}
 optflags = #{CONFIG['optflags']}
