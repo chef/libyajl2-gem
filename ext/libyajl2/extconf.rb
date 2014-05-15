@@ -213,6 +213,7 @@ all:
 \tcd #{libyajl2_vendor_dir}/src && make
 \tcp #{libyajl2_vendor_dir}/src/$(DLLIB) .
 install:
+\tmkdir -p #{prefix}/lib
 \tcp $(DLLIB) #{prefix}/lib
 \tmkdir -p #{prefix}/include/yajl
 \tcp #{libyajl2_vendor_dir}/src/api/*.h #{prefix}/include/yajl
