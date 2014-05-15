@@ -7,9 +7,17 @@
 set -e
 set -x
 
+machine=`uname -m`
+os=`uname -s`
+
 if test -f "/etc/lsb-release" && grep -q DISTRIB_ID /etc/lsb-release; then
   platform=`grep DISTRIB_ID /etc/lsb-release | cut -d "=" -f 2 | tr '[A-Z]' '[a-z]'`
   platform_version=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f 2`
+fi
+
+if test "x$os" = "xFreeBSD"; then
+  platform="freebsd"
+  platform_version=`uname -r | sed 's/-.*//'`
 fi
 
 compile_rubygems() {
@@ -19,6 +27,7 @@ compile_rubygems() {
   # i think this assumes running under bash
   cd -
 }
+
 
 case $platform in
   "ubuntu")
@@ -47,8 +56,17 @@ case $platform in
       apt-get -q -y install git cmake build-essential
     fi
     ;;
+  freebsd)
+    if pkg -N 2>&1 | grep "pkg is not installed"; then
+      export ASSUME_ALWAYS_YES=YES
+      pkg bootstrap
+      pkg2ng
+    fi
+    pkg install -y ruby
+    pkg install -y ruby19-gems
+    ;;
   *)
-    echo "i don't know how to setup base o/s on this platform, hope it works!"
+    echo "i don't know how to setup base o/s on platform $platform, hope it works!"
     ;;
 esac
 
