@@ -156,7 +156,6 @@ OBJS = yajl.o yajl_alloc.o yajl_buf.o yajl_encode.o yajl_gen.o yajl_lex.o yajl_p
 HDRS = yajl_alloc.h yajl_buf.h yajl_bytestack.h yajl_encode.h yajl_lex.h yajl_parser.h
 TARGET = libyajl
 DLLIB = $(TARGET).#{config['DLEXT']}
-POSTLINK = #{config['POSTLINK']}
 
 TIMESTAMP_DIR = .
 RUBYARCHDIR   = $(sitearchdir)$(target_prefix)
@@ -190,7 +189,6 @@ $(DLLIB): $(OBJS) Makefile
 \t$(ECHO) linking shared-object $(DLLIB)
 \t-$(Q)$(RM) $(@)
 \t$(Q) $(LDSHARED) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LIBS)
-\t$(Q) $(POSTLINK)
 
 $(OBJS): $(HDRS)
 EOF
