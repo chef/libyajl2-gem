@@ -19,7 +19,9 @@ Gemfile.lock
 .rvmrc
 
 ## skip compiled library, but keep the directory structure
-/lib/libyajl2/vendored-libyajl2/
-!/lib/libyajl2/vendored-libyajl2/.gitkeep
+/lib/libyajl2/vendored-libyajl2/lib
+/lib/libyajl2/vendored-libyajl2/include
+!/lib/libyajl2/vendored-libyajl2/lib/.gitkeep
+!/lib/libyajl2/vendored-libyajl2/include/.gitkeep
 
 .kitchen
