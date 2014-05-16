@@ -20,8 +20,8 @@ Gemfile.lock
 
 ## skip compiled library, but keep the directory structure
 /lib/libyajl2/vendored-libyajl2/lib
-/lib/libyajl2/vendored-libyajl2/include
+/lib/libyajl2/vendored-libyajl2/include/yajl
 !/lib/libyajl2/vendored-libyajl2/lib/.gitkeep
-!/lib/libyajl2/vendored-libyajl2/include/.gitkeep
+!/lib/libyajl2/vendored-libyajl2/include/yajl/.gitkeep
 
 .kitchen
