@@ -34,7 +34,7 @@ module Libyajl2Build
 
       # create the implib on windows
       if windows?
-        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajl.dll.a"
+        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=yajl.dll.a"
       end
     end
 
@@ -68,9 +68,21 @@ TARGET = libyajl
 DLLIB = $(TARGET).#{RbConfig::MAKEFILE_CONFIG['DLEXT']}
 all:
 
+EOF
+      if windows?
+        f.write <<EOF
 install:
 \tmkdir -p #{prefix}/lib
-\tcp $(DLLIB) #{prefix}/lib
+\tcp $(DLLIB) #{prefix}/lib/yajl.dll
+\tcp yajl.dll.a #{prefix}/lib/yajl.dll.a
+\tmkdir -p #{prefix}/include/yajl
+\tcp yajl/*.h #{prefix}/include/yajl
+EOF
+      else
+        f.write <<EOF
+install:
+\tmkdir -p #{prefix}/lib
+\tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
