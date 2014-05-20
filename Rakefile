@@ -104,7 +104,8 @@ end
 
 # FIXME: need a rake task to update the git submodule and need to do that before shipping
 desc "Build it and ship it"
-task :ship => [:clean, :prep, :gem] do
+#task :ship => [:clean, :prep, :gem] do
+task :ship do
   sh("git tag #{Libyajl2::VERSION}")
   sh("git push --tags")
   Dir[File.expand_path("../pkg/*.gem", __FILE__)].reverse.each do |built_gem|
