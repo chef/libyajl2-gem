@@ -29,27 +29,82 @@ end
 #  sh %{gem uninstall #{GEM_NAME} -x -v #{Libyajl2::VERSION} }
 #end
 #
-#desc "compile native gem"
 #task :compile do
-#  cd "ext/libyajl2"
+#  cp "ext/libyajl2"
 #  ruby "extconf.rb"
 #end
-#
-#desc "clean the git repo"
-#task :clean do
-#  sh "git clean -fdx"
-#  cd "ext/libyajl2/vendor/yajl"
-#  sh "git clean -fdx"
-#end
+
+desc "clean the git repo"
+task :clean do
+  sh "git clean -fdx"
+  cd "ext/libyajl2/vendor/yajl"
+  sh "git clean -fdx"
+end
 
 Rake::ExtensionTask.new('libyajl', gemspec) do |ext|
   ext.lib_dir = 'lib/libyajl2/vendored-libyajl2/lib'
   ext.ext_dir = 'ext/libyajl2'
 end
 
+# hack to generate yajl_version.h without using cmake
+def generate_yajl_version
+  build_path = File.expand_path("../ext/libyajl2", __FILE__)
+  vendor_path = File.expand_path("../ext/libyajl2/vendor/yajl", __FILE__)
+
+  yajl_major = yajl_minor = yajl_micro = nil
+  File.open("#{vendor_path}/CMakeLists.txt").each do |line|
+    if m = line.match(/YAJL_MAJOR (\d+)/)
+      yajl_major = m[1]
+    end
+    if m = line.match(/YAJL_MINOR (\d+)/)
+      yajl_minor = m[1]
+    end
+    if m = line.match(/YAJL_MICRO (\d+)/)
+      yajl_micro = m[1]
+    end
+  end
+  File.open("#{build_path}/api/yajl_version.h", "w+") do |out|  # FIXME: relative path
+    File.open("#{vendor_path}/src/api/yajl_version.h.cmake").each do |line|
+      line.gsub!(/\$\{YAJL_MAJOR\}/, yajl_major)
+      line.gsub!(/\$\{YAJL_MINOR\}/, yajl_minor)
+      line.gsub!(/\$\{YAJL_MICRO\}/, yajl_micro)
+      out.write(line)
+    end
+  end
+  FileUtils.cp "#{build_path}/api/yajl_version.h", "#{build_path}/yajl/yajl_version.h"
+end
+
+desc "Prep and patch yajl sources"
+task :prep do
+  build_path = File.expand_path("../ext/libyajl2", __FILE__)
+  vendor_src_path = File.expand_path("../ext/libyajl2/vendor/yajl/src", __FILE__)
+
+  # copy yajl files into build position
+  FileUtils.cp Dir["#{vendor_src_path}/*.c"], build_path
+  FileUtils.cp Dir["#{vendor_src_path}/*.h"], build_path
+
+  # the *.c files need api/yajl_foo.h headers
+  Dir.mkdir "#{build_path}/api" unless Dir.exist?("#{build_path}/api")
+  FileUtils.cp Dir["#{vendor_src_path}/api/*.h"], "#{build_path}/api"
+
+  # the header files need yajl/yajl_foo.h headers (and windows symlinks
+  # are a bit of a PITA so just copy them all)
+  Dir.mkdir "#{build_path}/yajl" unless Dir.exist?("#{build_path}/yajl")
+  FileUtils.cp Dir["#{vendor_src_path}/api/*.h"], "#{build_path}/yajl"
+
+  # apply patches that haven't yet been pushed upstream
+  Dir["#{build_path}/patches/*"].sort.each do |file|
+    Dir.chdir build_path
+    sh "patch -p2 < #{file}"
+  end
+
+  # generate the yajl_version.h header file without invoking cmake
+  generate_yajl_version
+end
+
 # FIXME: need a rake task to update the git submodule and need to do that before shipping
 desc "Build it and ship it"
-task :ship => [:clean, :gem] do
+task :ship => [:clean, :prep, :gem] do
   sh("git tag #{Libyajl2::VERSION}")
   sh("git push --tags")
   Dir[File.expand_path("../pkg/*.gem", __FILE__)].reverse.each do |built_gem|
