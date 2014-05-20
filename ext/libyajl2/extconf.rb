@@ -62,6 +62,11 @@ module Libyajl2Build
     system("make V=1")
     # ...so we can hack up what install does later and copy over the include files
 
+    # not sure why ruby windows produces .so's instead of .dll's
+    if windows?
+      FileUtils.mv "libyajl.so", "yajl.dll"
+    end
+
     File.open("Makefile", "w+") do |f|
       f.write <<EOF
 TARGET = libyajl
@@ -73,7 +78,7 @@ EOF
         f.write <<EOF
 install:
 \tmkdir -p #{prefix}/lib
-\tcp $(DLLIB) #{prefix}/lib/yajl.dll
+\tcp yajl.dll #{prefix}/lib/yajl.dll
 \tcp yajl.dll.a #{prefix}/lib/yajl.dll.a
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
