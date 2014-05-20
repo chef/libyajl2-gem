@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   # required for 'rake spec'
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "rake-compiler", "~> 0.8.3"
   # pin mime-types in order to work on ruby 1.8.7
   spec.add_development_dependency "mime-types", "~> 1.16"
   spec.add_development_dependency "rspec", "~> 2.14"
