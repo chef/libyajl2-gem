@@ -40,22 +40,23 @@ module Libyajl2Build
 
     $CFLAGS << " -DNDEBUG"
 
-
     # ENV vars can override everything
     $CFLAGS = ENV['CFLAGS'] if ENV['CFLAGS']
     $LDFLAGS = ENV['LDFLAGS'] if ENV['LDFLAGS']
-
-    if windows?
-      # on windows this will try to spit out a *.def that exports Init_libyajl which is wrong, we aren't a ruby lib, so we
-      # will never export that.
-      RbConfig::MAKEFILE_CONFIG['DLDFLAGS'].gsub!(/\$\(DEFFILE\)/, '')
-    end
   end
 
   def self.makemakefiles
     setup_env
     dir_config("libyajl")
     create_makefile("libyajl")
+
+    # on windows the Makefile will try to export Init_libyajl which is wrong because we aren't a ruby lib.
+    # i could not figure out how to tell mkmf.rb to stop being so helpful, so instead will just patch it here.
+    if windows?
+      makefile = IO.read("Makefile")
+      makefile.gsub!(/\$\(DEFFILE\)/, '')
+      File.open("Makefile", 'w+') {|f| f.write(makefile) }
+    end
 
     # we cheat and build it right away...
     system("make V=1")
