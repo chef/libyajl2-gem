@@ -39,10 +39,6 @@ module Libyajl2Build
     end
 
     $CFLAGS << " -DNDEBUG"
-
-    # ENV vars can override everything
-    $CFLAGS = ENV['CFLAGS'] if ENV['CFLAGS']
-    $LDFLAGS = ENV['LDFLAGS'] if ENV['LDFLAGS']
   end
 
   def self.makemakefiles
