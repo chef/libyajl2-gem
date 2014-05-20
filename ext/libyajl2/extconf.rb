@@ -50,6 +50,12 @@ module Libyajl2Build
     setup_env
     dir_config("libyajl")
     create_makefile("libyajl")
+
+    # ruby on windows helpfully drops a *.def file to export Init_libyajl which we don't need because this isn't really a ruby extension
+    FileUtils.rm_f("*.def")
+    # and we need to surgically remove it from the LDFLAGS
+    $LDFLAGS.gsub!(/\S+.def/, ' ')
+
     # we cheat and build it right away...
     system("make V=1")
     # ...so we can hack up what install does later and copy over the include files
