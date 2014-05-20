@@ -52,7 +52,7 @@ module Libyajl2Build
     create_makefile("libyajl")
 
     # ruby on windows helpfully drops a *.def file to export Init_libyajl which we don't need because this isn't really a ruby extension
-    FileUtils.rm_f("*.def")
+    FileUtils.rm_f(Dir["*.def"])
     # and we need to surgically remove it from the LDFLAGS
     $LDFLAGS.gsub!(/\S+.def/, ' ')
 
