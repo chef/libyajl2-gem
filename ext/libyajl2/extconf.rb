@@ -44,17 +44,18 @@ module Libyajl2Build
     # ENV vars can override everything
     $CFLAGS = ENV['CFLAGS'] if ENV['CFLAGS']
     $LDFLAGS = ENV['LDFLAGS'] if ENV['LDFLAGS']
+
+    if windows?
+      # on windows this will try to spit out a *.def that exports Init_libyajl which is wrong, we aren't a ruby lib, so we
+      # will never export that.
+      RbConfig::MAKEFILE_CONFIG['EXTDLDFLAGS'] = ''
+    end
   end
 
   def self.makemakefiles
     setup_env
     dir_config("libyajl")
     create_makefile("libyajl")
-
-    # ruby on windows helpfully drops a *.def file to export Init_libyajl which we don't need because this isn't really a ruby extension
-    FileUtils.rm_f(Dir["*.def"])
-    # and we need to surgically remove it from the LDFLAGS
-    $LDFLAGS.gsub!(/\S+.def/, ' ')
 
     # we cheat and build it right away...
     system("make V=1")
