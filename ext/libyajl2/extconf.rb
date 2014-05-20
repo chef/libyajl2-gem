@@ -91,6 +91,7 @@ install:
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
+      end
     end
   end
 end
