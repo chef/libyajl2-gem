@@ -7,7 +7,7 @@ index 0f5c68e..a86a6ed 100644
  }
  
 -#if defined(_WIN32) || defined(WIN32)
-+#if ( defined(_WIN32) || defined(WIN32) ) && !defined(__GCC__)
++#if ( defined(_WIN32) || defined(WIN32) ) && !defined(__GNUC__)
  #include <float.h>
  #define isnan _isnan
  #define isinf !_finite
@@ -20,7 +20,7 @@ index 3d357a3..2b4c183 100644
  #include "yajl_parser.h"
  
 -#if defined(_WIN32) || defined(WIN32)
-+#if ( defined(_WIN32) || defined(WIN32) ) && !defined(__GCC__)
++#if ( defined(_WIN32) || defined(WIN32) ) && !defined(__GNUC__)
  #define snprintf sprintf_s
  #endif
  
