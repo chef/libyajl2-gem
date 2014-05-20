@@ -48,7 +48,7 @@ module Libyajl2Build
     if windows?
       # on windows this will try to spit out a *.def that exports Init_libyajl which is wrong, we aren't a ruby lib, so we
       # will never export that.
-      RbConfig::MAKEFILE_CONFIG['EXTDLDFLAGS'] = ''
+      RbConfig::MAKEFILE_CONFIG['DLDFLAGS'].gsub!(/\$\(DEFFILE\)/, '')
     end
   end
 
