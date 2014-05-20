@@ -102,9 +102,14 @@ task :prep do
   generate_yajl_version
 end
 
+#
 # FIXME: need a rake task to update the git submodule and need to do that before shipping
-desc "Build it and ship it"
-#task :ship => [:clean, :prep, :gem] do
+#
+# to ship, update lib/libyajl2/version.rb and commit that, then:
+#
+#  git push && rake clean && rake prep && rake gem && rake ship
+#
+desc "Ship it"
 task :ship do
   sh("git tag #{Libyajl2::VERSION}")
   sh("git push --tags")
