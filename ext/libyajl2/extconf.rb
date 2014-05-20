@@ -24,55 +24,35 @@ module Libyajl2Build
   end
 
   def self.setup_env
-    #if config['CC'] =~ /gcc/ || config['CC'] =~ /clang/
-    #  config['CFLAGS'] << " -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes"
-    #end
-  end
+    RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 
-  # since we're not using cmake we have to mangle up yajl_version.h ourselves
-  def self.generate_yajl_version
-    yajl_major = yajl_minor = yajl_micro = nil
-    File.open("#{libyajl2_vendor_dir}/CMakeLists.txt").each do |line|
-      if m = line.match(/YAJL_MAJOR (\d+)/)
-        yajl_major = m[1]
-      end
-      if m = line.match(/YAJL_MINOR (\d+)/)
-        yajl_minor = m[1]
-      end
-      if m = line.match(/YAJL_MICRO (\d+)/)
-        yajl_micro = m[1]
+    # set some sane defaults
+    if RbConfig::MAKEFILE_CONFIG['CC'] =~ /gcc|clang/
+      # magic flags copied from upstream yajl build system (-std=c99 is necessary for older gcc)
+      $CFLAGS << " -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes"
+      $CFLAGS << " -O2"  # match what the upstream uses for optimization
+
+      # create the implib on windows
+      if windows?
+        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajl.dll.a"
       end
     end
-    File.open("api/yajl_version.h", "w+") do |out|  # FIXME: relative path
-      File.open("#{libyajl2_vendor_dir}/src/api/yajl_version.h.cmake").each do |line|
-        line.gsub!(/\$\{YAJL_MAJOR\}/, yajl_major)
-        line.gsub!(/\$\{YAJL_MINOR\}/, yajl_minor)
-        line.gsub!(/\$\{YAJL_MICRO\}/, yajl_micro)
-        out.write(line)
-      end
-    end
-    FileUtils.cp "api/yajl_version.h", "yajl/yajl_version.h"
-  end
 
-  def self.copy_yajl_files
-    # FIXME: resolve the relative paths in dst
-    FileUtils.cp Dir["#{libyajl2_vendor_dir}/src/*.c"], '.'
-    FileUtils.cp Dir["#{libyajl2_vendor_dir}/src/*.h"], '.'
-    Dir.mkdir "api" unless Dir.exist?("api")
-    FileUtils.cp Dir["#{libyajl2_vendor_dir}/src/api/*.h"], 'api'
-    Dir.mkdir "yajl" unless Dir.exist?("yajl")
-    FileUtils.cp Dir["#{libyajl2_vendor_dir}/src/api/*.h"], 'yajl'
+    $CFLAGS << " -DNDEBUG"
+
+
+    # ENV vars can override everything
+    $CFLAGS = ENV['CFLAGS'] if ENV['CFLAGS']
+    $LDFLAGS = ENV['LDFLAGS'] if ENV['LDFLAGS']
   end
 
   def self.makemakefiles
     setup_env
-    copy_yajl_files
-    generate_yajl_version
     dir_config("libyajl")
     create_makefile("libyajl")
-    # we cheat and build it right away
-    system("make")
-    # so we can hack up what install does later
+    # we cheat and build it right away...
+    system("make V=1")
+    # ...so we can hack up what install does later and copy over the include files
 
     File.open("Makefile", "w+") do |f|
       f.write <<EOF
