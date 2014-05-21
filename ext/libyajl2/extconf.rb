@@ -76,6 +76,7 @@ install:
 \tmkdir -p #{prefix}/lib
 \tcp yajl.dll #{prefix}/lib/yajl.dll
 \tcp yajl.dll.a #{prefix}/lib/yajl.dll.a
+\tcp yajl.def #{prefix}/lib/yajl.def
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
