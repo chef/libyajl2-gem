@@ -84,12 +84,12 @@ task :prep do
   FileUtils.cp Dir["#{vendor_src_path}/*.h"], build_path
 
   # the *.c files need api/yajl_foo.h headers
-  Dir.mkdir "#{build_path}/api" unless Dir.exist?("#{build_path}/api")
+  Dir.mkdir "#{build_path}/api" unless File.exist?("#{build_path}/api")
   FileUtils.cp Dir["#{vendor_src_path}/api/*.h"], "#{build_path}/api"
 
   # the header files need yajl/yajl_foo.h headers (and windows symlinks
   # are a bit of a PITA so just copy them all)
-  Dir.mkdir "#{build_path}/yajl" unless Dir.exist?("#{build_path}/yajl")
+  Dir.mkdir "#{build_path}/yajl" unless File.exist?("#{build_path}/yajl")
   FileUtils.cp Dir["#{vendor_src_path}/api/*.h"], "#{build_path}/yajl"
 
   # apply patches that haven't yet been pushed upstream
