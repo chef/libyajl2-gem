@@ -102,7 +102,8 @@ task :prep do
   generate_yajl_version
 end
 
-task :compile do
+desc "Deploy headers (for after compile)"
+task :headers do
   include_path = File.expand_path("../lib/libyajl2/vendored-libyajl2/include/yajl", __FILE__)
   vendor_src_path = File.expand_path("../ext/libyajl2/vendor/yajl/src", __FILE__)
 
