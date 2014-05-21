@@ -34,7 +34,7 @@ module Libyajl2Build
 
       # create the implib on windows
       if windows?
-        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=yajl.dll.a -Wl,--output-def,yajl.def"
+        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajldll.a -Wl,--output-def,libyajl.def"
       end
     end
 
@@ -75,8 +75,8 @@ EOF
 install:
 \tmkdir -p #{prefix}/lib
 \tcp yajl.dll #{prefix}/lib/yajl.dll
-\tcp yajl.dll.a #{prefix}/lib/yajl.dll.a
-\tcp yajl.def #{prefix}/lib/yajl.def
+\tcp libyajldll.a #{prefix}/lib/libyajldll.a
+\tcp libyajl.def #{prefix}/lib/libyajl.def
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
