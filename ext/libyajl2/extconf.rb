@@ -34,7 +34,7 @@ module Libyajl2Build
 
       # create the implib on windows
       if windows?
-        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=yajl.dll.a"
+        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=yajl.dll.a -Wl,--output-def,yajl.def"
       end
     end
 
