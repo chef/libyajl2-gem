@@ -1,7 +1,8 @@
 language: ruby
 before_install:
   - sudo dpkg -P libyajl1 || true
-  - gem update bundler
+  - gem install bundler
+  - gem install bundler
   - bundle --version
   - gem update --system 2.2.2
   - gem update --system 2.2.2
