@@ -6,4 +6,6 @@ rvm:
 - 2.1.1
 bundler_args: --without development_extras
 script:
+- bundle exec rake prep --trace
+- bundle exec rake compile --trace
 - bundle exec rake travis --trace
