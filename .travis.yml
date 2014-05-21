@@ -3,8 +3,8 @@ before_install:
   - sudo dpkg -P libyajl1 || true
   - gem update bundler
   - bundle --version
-  - gem update --system 2.1.11
-  - gem update --system 2.1.11
+  - gem update --system 2.2.2
+  - gem update --system 2.2.2
   - gem --version
 rvm:
   - 2.1.2
