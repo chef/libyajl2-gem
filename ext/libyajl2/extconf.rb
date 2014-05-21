@@ -55,7 +55,7 @@ module Libyajl2Build
     end
 
     # we cheat and build it right away...
-    system("make V=1")
+    system("make V=1 1>&2")  # for rubinius we send stdout to stderr
     # ...so we can hack up what install does later and copy over the include files
 
     # not sure why ruby windows produces .so's instead of .dll's
