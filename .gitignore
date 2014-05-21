@@ -18,6 +18,11 @@ Gemfile.lock
 .ruby-gemset
 .rvmrc
 
+/ext/libyajl2/*.h
+/ext/libyajl2/*.c
+/ext/libyajl2/api
+/ext/libyajl2/yajl
+
 ## skip compiled library, but keep the directory structure
 /lib/libyajl2/vendored-libyajl2/lib
 /lib/libyajl2/vendored-libyajl2/include/yajl
