@@ -10,3 +10,9 @@ group :development_extras do
   gem 'kitchen-ec2'
   gem 'kitchen-vagrant'
 end
+
+platforms :rbx do
+  gem 'racc'
+  gem 'rubysl', '~> 2.0'
+  gem 'psych'
+end
