@@ -2,7 +2,6 @@ exit(0) if ENV["USE_SYSTEM_LIBYAJL2"]
 
 require 'rbconfig'
 require 'fileutils'
-require 'mkmf'
 
 module Libyajl2Build
   class BuildError < StandardError; end
@@ -21,6 +20,10 @@ module Libyajl2Build
 
   def self.prefix
     PREFIX
+  end
+
+  def self.deps
+    require 'mkmf'
   end
 
   def self.setup_env
@@ -42,37 +45,65 @@ module Libyajl2Build
   end
 
   def self.makemakefiles
-    setup_env
-    dir_config("libyajl")
-    create_makefile("libyajl")
+    if RUBY_PLATFORM == "java"
+      File.open("Makefile", "w+") do |f|
+        f.write <<EOF
+CC = gcc
+TARGET = libyajl
+DLLIB = $(TARGET).so
+CFLAGS =  -I. -I../../../../ext/libyajl2 -fPIC -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  -fPIC -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes -O2 -DNDEBUG
+LDFLAGS = -L. -fstack-protector -rdynamic -Wl,-export-dynamic
+LIBS = -lpthread -ldl -lcrypt -lm -lc
+OBJS = yajl_alloc.o yajl_tree.o yajl_gen.o yajl_buf.o yajl.o yajl_encode.o yajl_lex.o yajl_parser.o yajl_version.o
 
-    # on windows the Makefile will try to export Init_libyajl which is wrong because we aren't a ruby lib.
-    # i could not figure out how to tell mkmf.rb to stop being so helpful, so instead will just patch it here.
-    if windows?
-      makefile = IO.read("Makefile")
-      makefile.gsub!(/\$\(DEFFILE\)/, '')
-      File.open("Makefile", 'w+') {|f| f.write(makefile) }
-    end
+all: $(DLLIB)
 
-    system("pwd")
-    # we cheat and build it right away...
-    system("make >make.out 2>&1") || raise # rubinius doesn't like the output this generates
-    # ...so we can hack up what install does later and copy over the include files
+$(DLLIB): $(OBJS)
+\t$(CC) -shared -o $(DLLIB) $(OBJS) $(LDFLAGS) $(LIBS)
 
-    # not sure why ruby windows produces .so's instead of .dll's
-    if windows?
-      FileUtils.mv "libyajl.so", "yajl.dll"
-    end
+%.o: ../../../../ext/libyajl2/%.c
+\t$(COMPILE.c) $(OUTPUT_OPTION) $<
 
-    File.open("Makefile", "w+") do |f|
-      f.write <<EOF
+install:
+\tmkdir -p #{prefix}/lib
+\tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
+\tmkdir -p #{prefix}/include/yajl
+\tcp yajl/*.h #{prefix}/include/yajl
+EOF
+      end
+    else
+      deps
+      setup_env
+      dir_config("libyajl")
+      create_makefile("libyajl")
+
+      # on windows the Makefile will try to export Init_libyajl which is wrong because we aren't a ruby lib.
+      # i could not figure out how to tell mkmf.rb to stop being so helpful, so instead will just patch it here.
+      if windows?
+        makefile = IO.read("Makefile")
+        makefile.gsub!(/\$\(DEFFILE\)/, '')
+        File.open("Makefile", 'w+') {|f| f.write(makefile) }
+      end
+
+      system("pwd")
+      # we cheat and build it right away...
+      system("make V=1") || raise # rubinius doesn't like the output this generates
+      # ...so we can hack up what install does later and copy over the include files
+
+      # not sure why ruby windows produces .so's instead of .dll's
+      if windows?
+        FileUtils.mv "libyajl.so", "yajl.dll"
+      end
+
+      File.open("Makefile", "w+") do |f|
+        f.write <<EOF
 TARGET = libyajl
 DLLIB = $(TARGET).#{RbConfig::MAKEFILE_CONFIG['DLEXT']}
 all:
 
 EOF
-      if windows?
-        f.write <<EOF
+        if windows?
+          f.write <<EOF
 install:
 \tmkdir -p #{prefix}/lib
 \tcp yajl.dll #{prefix}/lib/yajl.dll
@@ -81,14 +112,15 @@ install:
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
-      else
-        f.write <<EOF
+        else
+          f.write <<EOF
 install:
 \tmkdir -p #{prefix}/lib
 \tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
 \tmkdir -p #{prefix}/include/yajl
 \tcp yajl/*.h #{prefix}/include/yajl
 EOF
+        end
       end
     end
   end
