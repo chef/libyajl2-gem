@@ -87,7 +87,7 @@ EOF
 
       system("pwd")
       # we cheat and build it right away...
-      system("make >make.out 2>&1") || raise "compile failed" # rubinius doesn't like the output this generates
+      system("make >make.out 2>&1") || raise # rubinius doesn't like the output this generates
       # ...so we can hack up what install does later and copy over the include files
 
       # not sure why ruby windows produces .so's instead of .dll's
