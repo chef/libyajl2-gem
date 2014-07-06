@@ -1,7 +1,20 @@
-exit(0) if ENV["USE_SYSTEM_LIBYAJL2"]
 
 require 'rbconfig'
 require 'fileutils'
+
+if ENV["USE_SYSTEM_LIBYAJL2"]
+  File.open("Makefile", "w+") do |f|
+    f.write <<EOF
+# dummy Makefile when we're not really installing
+all:
+\ttrue
+
+install:
+\ttrue
+EOF
+  end
+  exit(0)
+end
 
 module Libyajl2Build
   class BuildError < StandardError; end
