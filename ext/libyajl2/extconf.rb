@@ -52,7 +52,7 @@ CC = gcc
 TARGET = libyajl
 DLLIB = $(TARGET).so
 CFLAGS =  -I. -I../../../../ext/libyajl2 -fPIC -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  -fPIC -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes -O2 -DNDEBUG
-LDFLAGS = -L. -fstack-protector -rdynamic -Wl,-export-dynamic
+LDFLAGS = -L. -fstack-protector -rdynamic
 LIBS = -lpthread -ldl -lcrypt -lm -lc
 OBJS = yajl_alloc.o yajl_tree.o yajl_gen.o yajl_buf.o yajl.o yajl_encode.o yajl_lex.o yajl_parser.o yajl_version.o
 
