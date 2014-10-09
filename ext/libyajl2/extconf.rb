@@ -104,11 +104,6 @@ EOF
       system("make >make.out 2>&1") || raise # rubinius doesn't like the output this generates
       # ...so we can hack up what install does later and copy over the include files
 
-      # not sure why ruby windows produces .so's instead of .dll's
-      if windows?
-        FileUtils.mv "libyajl.so", "yajl.dll"
-      end
-
       File.open("Makefile", "w+") do |f|
         f.write <<EOF
 TARGET = libyajl
@@ -120,7 +115,7 @@ EOF
           f.write <<EOF
 install:
 \tmkdir -p #{prefix}/lib
-\tcp yajl.dll #{prefix}/lib/yajl.dll
+\tcp libyajl.so #{prefix}/lib/libyajl.so
 \tcp libyajldll.a #{prefix}/lib/libyajldll.a
 \tcp libyajl.def #{prefix}/lib/libyajl.def
 \tmkdir -p #{prefix}/include/yajl
@@ -141,4 +136,3 @@ EOF
 end
 
 Libyajl2Build.makemakefiles
-
