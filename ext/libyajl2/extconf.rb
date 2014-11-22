@@ -24,7 +24,7 @@ module Libyajl2Build
   PREFIX = File.expand_path("../../../lib/libyajl2/vendored-libyajl2", __FILE__).freeze
 
   def self.windows?
-    !!(RUBY_PLATFORM =~ /mswin|mingw|windows/)
+    !!(RUBY_PLATFORM =~ /mswin|mingw|cygwin|windows/)
   end
 
   def self.libyajl2_vendor_dir

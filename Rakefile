@@ -95,7 +95,7 @@ task :prep do
   # apply patches that haven't yet been pushed upstream
   Dir["#{build_path}/patches/*"].sort.each do |file|
     Dir.chdir build_path
-    sh "patch -p2 < #{file}"
+    sh "patch -p2 --binary < #{file}"
   end
 
   # generate the yajl_version.h header file without invoking cmake
