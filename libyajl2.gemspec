@@ -13,7 +13,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/opscode/libyajl2-gem"
   spec.licenses       = ["Apache 2.0"]
 
-  spec.files         = Dir.glob("{ext,lib,spec}/**/*") +
+  spec.files         = Dir.glob("{ext,lib,spec}/**/*") -
+    Dir.glob("lib/libyajl2/vendored-libyajl2/**/*") +
     %w{Gemfile Rakefile CONTRIBUTING.md README.md libyajl2.gemspec bootstrap.sh LICENSE}
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^spec/})
@@ -26,6 +27,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   # rake-compiler 0.9.2 is required for rbx compiles, and in turn requires rubygems >= 1.8.25
   spec.add_development_dependency "rake-compiler", "~> 0.9"
+  spec.add_development_dependency "rake-compiler-dock", "~> 0.5"
+  # pin mime-types in order to work on ruby 1.8.7
+  spec.add_development_dependency "mime-types", "~> 1.16"
   spec.add_development_dependency "rspec", "~> 2.14"
   spec.add_development_dependency "ffi", "~> 1.9"
 end

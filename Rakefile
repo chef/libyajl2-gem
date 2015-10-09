@@ -6,6 +6,7 @@ require 'rake'
 require 'rubygems/package_task'
 require 'rspec/core/rake_task'
 require 'rake/extensiontask'
+require 'rake_compiler_dock'
 
 GEM_NAME = "libyajl2"
 
@@ -44,6 +45,10 @@ end
 Rake::ExtensionTask.new('libyajl', gemspec) do |ext|
   ext.lib_dir = 'lib/libyajl2/vendored-libyajl2/lib'
   ext.ext_dir = 'ext/libyajl2'
+  unless Rake.application.windows?
+    ext.cross_compile = true
+    ext.cross_platform = ["x86-mingw32", "x64-mingw32"]
+  end
 end
 
 # hack to generate yajl_version.h without using cmake
@@ -109,6 +114,25 @@ task :headers do
 
   FileUtils.mkdir_p(include_path)
   FileUtils.cp Dir["#{build_path}/api/*.h"], include_path
+end
+
+namespace :gem do
+  desc "Build gem files for Windows"
+  task :windows => "pkg" do
+    tmp_dir = "tmp"
+    tmp_build_dir = "#{tmp_dir}/windows"
+    rm_rf tmp_dir
+    mkdir_p tmp_dir
+    RakeCompilerDock.sh <<-BUILD_COMMANDS
+      git clone --recursive file://#{Dir.pwd}/.git #{tmp_build_dir}
+      cd #{tmp_build_dir}
+      bundle
+      rake prep
+      rake cross native gem RUBY_CC_VERSION='2.1.6:2.2.2:2.3.0'
+    BUILD_COMMANDS
+    cp Dir.glob("#{tmp_build_dir}/pkg/#{gemspec.name}-#{gemspec.version}-*.gem"),
+       "pkg/"
+  end
 end
 
 #
