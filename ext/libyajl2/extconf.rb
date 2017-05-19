@@ -1,6 +1,7 @@
 
 require 'rbconfig'
 require 'fileutils'
+require 'shellwords'
 
 if ENV["USE_SYSTEM_LIBYAJL2"]
   File.open("Makefile", "w+") do |f|
@@ -32,7 +33,7 @@ module Libyajl2Build
   end
 
   def self.prefix
-    PREFIX
+    PREFIX.shellescape
   end
 
   def self.deps
