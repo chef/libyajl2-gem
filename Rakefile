@@ -1,15 +1,15 @@
 $: << File.expand_path(File.join(File.dirname( __FILE__ ), "lib"))
 
-require 'rubygems'
-require 'rake'
+require "rubygems"
+require "rake"
 
-require 'rubygems/package_task'
-require 'rspec/core/rake_task'
-require 'rake/extensiontask'
+require "rubygems/package_task"
+require "rspec/core/rake_task"
+require "rake/extensiontask"
 
 GEM_NAME = "libyajl2"
 
-gemspec = eval(File.read('libyajl2.gemspec'))
+gemspec = eval(File.read("libyajl2.gemspec")) # rubocop:disable Security/Eval
 
 Gem::PackageTask.new(gemspec) do |pkg|
   pkg.need_tar = true
@@ -41,9 +41,9 @@ task :clean do
   sh "git clean -fdx"
 end
 
-Rake::ExtensionTask.new('libyajl', gemspec) do |ext|
-  ext.lib_dir = 'lib/libyajl2/vendored-libyajl2/lib'
-  ext.ext_dir = 'ext/libyajl2'
+Rake::ExtensionTask.new("libyajl", gemspec) do |ext|
+  ext.lib_dir = "lib/libyajl2/vendored-libyajl2/lib"
+  ext.ext_dir = "ext/libyajl2"
 end
 
 # hack to generate yajl_version.h without using cmake
@@ -53,17 +53,17 @@ def generate_yajl_version
 
   yajl_major = yajl_minor = yajl_micro = nil
   File.open("#{vendor_path}/CMakeLists.txt").each do |line|
-    if m = line.match(/YAJL_MAJOR (\d+)/)
+    if (m = line.match(/YAJL_MAJOR (\d+)/))
       yajl_major = m[1]
     end
-    if m = line.match(/YAJL_MINOR (\d+)/)
+    if (m = line.match(/YAJL_MINOR (\d+)/))
       yajl_minor = m[1]
     end
-    if m = line.match(/YAJL_MICRO (\d+)/)
+    if (m = line.match(/YAJL_MICRO (\d+)/))
       yajl_micro = m[1]
     end
   end
-  File.open("#{build_path}/api/yajl_version.h", "w+") do |out|  # FIXME: relative path
+  File.open("#{build_path}/api/yajl_version.h", "w+") do |out| # FIXME: relative path
     File.open("#{vendor_path}/src/api/yajl_version.h.cmake").each do |line|
       line.gsub!(/\$\{YAJL_MAJOR\}/, yajl_major)
       line.gsub!(/\$\{YAJL_MINOR\}/, yajl_minor)
@@ -136,7 +136,7 @@ RSpec::Core::RakeTask.new(:spec)
 if RUBY_VERSION.to_f >= 1.9
   namespace :integration do
     begin
-      require 'kitchen'
+      require "kitchen"
     rescue LoadError
       task :vagrant do
         puts "test-kitchen gem is not installed"
@@ -145,7 +145,7 @@ if RUBY_VERSION.to_f >= 1.9
         puts "test-kitchen gem is not installed"
       end
     else
-      desc 'Run Test Kitchen with Vagrant'
+      desc "Run Test Kitchen with Vagrant"
       task :vagrant do
         Kitchen.logger = Kitchen.default_file_logger
         Kitchen::Config.new.instances.each do |instance|
@@ -153,32 +153,33 @@ if RUBY_VERSION.to_f >= 1.9
         end
       end
 
-      desc 'Run Test Kitchen with cloud plugins'
+      desc "Run Test Kitchen with cloud plugins"
       task :cloud do
-        if ENV['TRAVIS_PULL_REQUEST'] != 'true'
-          ENV['KITCHEN_YAML'] = '.kitchen.cloud.yml'
+        if ENV["TRAVIS_PULL_REQUEST"] != "true"
+          ENV["KITCHEN_YAML"] = ".kitchen.cloud.yml"
           sh "kitchen test --concurrency 4"
         end
       end
     end
   end
   namespace :style do
-    desc 'Run Ruby style checks'
+    desc "Run Ruby style checks"
     begin
-      require 'rubocop/rake_task'
+      require "chefstyle"
+      require "rubocop/rake_task"
     rescue LoadError
       task :rubocop do
         puts "rubocop gem is not installed"
       end
     else
-      Rubocop::RakeTask.new(:rubocop) do |t|
+      RuboCop::RakeTask.new(:rubocop) do |t|
         t.fail_on_error = false
       end
     end
 
-    desc 'Run Ruby smell checks'
+    desc "Run Ruby smell checks"
     begin
-      require 'reek/rake/task'
+      require "reek/rake/task"
     rescue LoadError
       task :reek do
         puts "reek gem is not installed"
@@ -186,7 +187,7 @@ if RUBY_VERSION.to_f >= 1.9
     else
       Reek::Rake::Task.new(:reek) do |t|
         t.fail_on_error = false
-        t.config_files = '.reek.yml'
+        t.config_file = ".reek.yml"
       end
     end
   end
@@ -209,14 +210,13 @@ else
   end
 end
 
+desc "Run all style checks"
+task :style => ["style:rubocop", "style:reek"]
 
-desc 'Run all style checks'
-task :style => ['style:rubocop', 'style:reek']
+desc "Run style + spec tests by default on travis"
+task :travis => %w{spec style}
 
-desc 'Run style + spec tests by default on travis'
-task :travis => ['spec', 'style']
+desc "Run style, spec and test kichen on travis"
+task :travis_all => ["spec", "integration:cloud", "style"]
 
-desc 'Run style, spec and test kichen on travis'
-task :travis_all => ['spec', 'integration:cloud', 'style']
-
-task :default => ['spec', 'integration:vagrant', 'style']
+task :default => ["spec", "integration:vagrant", "style"]
