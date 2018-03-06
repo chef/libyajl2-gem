@@ -1,7 +1,7 @@
 
-require 'rbconfig'
-require 'fileutils'
-require 'shellwords'
+require "rbconfig"
+require "fileutils"
+require "shellwords"
 
 if ENV["USE_SYSTEM_LIBYAJL2"]
   File.open("Makefile", "w+") do |f|
@@ -37,17 +37,17 @@ module Libyajl2Build
   end
 
   def self.deps
-    require 'mkmf'
+    require "mkmf"
   end
 
   def self.setup_env
-    RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
+    RbConfig::MAKEFILE_CONFIG["CC"] = ENV["CC"] if ENV["CC"]
 
     # set some sane defaults
-    if RbConfig::MAKEFILE_CONFIG['CC'] =~ /gcc|clang/
+    if RbConfig::MAKEFILE_CONFIG["CC"] =~ /gcc|clang/
       # magic flags copied from upstream yajl build system (-std=c99 is necessary for older gcc)
       $CFLAGS << " -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes"
-      $CFLAGS << " -O2"  # match what the upstream uses for optimization
+      $CFLAGS << " -O2" # match what the upstream uses for optimization
 
       # create the implib on windows
       if windows?
@@ -96,8 +96,8 @@ EOF
       # i could not figure out how to tell mkmf.rb to stop being so helpful, so instead will just patch it here.
       if windows?
         makefile = IO.read("Makefile")
-        makefile.gsub!(/\$\(DEFFILE\)/, '')
-        File.open("Makefile", 'w+') {|f| f.write(makefile) }
+        makefile.gsub!(/\$\(DEFFILE\)/, "")
+        File.open("Makefile", "w+") { |f| f.write(makefile) }
       end
 
       system("pwd")
