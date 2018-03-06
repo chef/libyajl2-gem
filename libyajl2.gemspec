@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "libyajl2"
   spec.version       = Libyajl2::VERSION
   spec.authors       = ["lamont-granquist"]
-  spec.email         = ["lamont@getchef.com"]
+  spec.email         = ["lamont@chef.io"]
   spec.summary       = %q{Installs a vendored copy of libyajl2 for distributions which lack it}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/opscode/libyajl2-gem"
-  spec.licenses = ["Apache 2.0"]
+  spec.licenses      = ["Apache 2.0"]
 
   spec.files         = Dir.glob("{ext,lib,spec}/**/*") +
     %w{Gemfile Rakefile CONTRIBUTING.md README.md libyajl2.gemspec bootstrap.sh LICENSE}
