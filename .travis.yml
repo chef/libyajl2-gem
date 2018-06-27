@@ -1,4 +1,7 @@
 language: ruby
+branches:
+  only:
+    - master
 before_install:
   - sudo dpkg -P libyajl1 || true
   - gem install bundler
@@ -12,14 +15,9 @@ rvm:
   - 2.1.1
   - 2.1.0
   - 2.0.0
-  - 1.9.3
-  - 1.9.2
-  - 1.8.7
   - ruby-head
   - ree
   - rbx-2.2
-  - jruby-19mode
-  - jruby-18mode
   - jruby-head
 jdk:
   - openjdk7
@@ -51,18 +49,6 @@ matrix:
     - rvm: 2.0.0
       jdk: openjdk6
     - rvm: 2.0.0
-      jdk: openjdk7
-    - rvm: 1.9.3
-      jdk: openjdk6
-    - rvm: 1.9.3
-      jdk: openjdk7
-    - rvm: 1.9.2
-      jdk: openjdk6
-    - rvm: 1.9.2
-      jdk: openjdk7
-    - rvm: 1.8.7
-      jdk: openjdk6
-    - rvm: 1.8.7
       jdk: openjdk7
     - rvm: rbx-2.2
       jdk: openjdk6
