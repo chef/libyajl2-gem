@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Installs a vendored copy of libyajl2 for distributions which lack it}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/chef/libyajl2-gem"
-  spec.licenses      = ["Apache 2.0"]
+  spec.licenses      = ["Apache-2.0"]
 
   spec.files         = Dir.glob("{ext,lib,spec}/**/*") +
     %w{Gemfile Rakefile libyajl2.gemspec bootstrap.sh LICENSE}
