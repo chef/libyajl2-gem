@@ -16,7 +16,6 @@ rvm:
   - 2.1.0
   - 2.0.0
   - ruby-head
-  - ree
   - rbx-2.2
   - jruby-head
 jdk:
