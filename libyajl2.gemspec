@@ -10,12 +10,11 @@ Gem::Specification.new do |spec|
   spec.email         = ["lamont@chef.io"]
   spec.summary       = %q{Installs a vendored copy of libyajl2 for distributions which lack it}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/opscode/libyajl2-gem"
+  spec.homepage      = "https://github.com/chef/libyajl2-gem"
   spec.licenses      = ["Apache 2.0"]
 
   spec.files         = Dir.glob("{ext,lib,spec}/**/*") +
-    %w{Gemfile Rakefile CONTRIBUTING.md README.md libyajl2.gemspec bootstrap.sh LICENSE}
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+    %w{Gemfile Rakefile README.md libyajl2.gemspec bootstrap.sh LICENSE}
   spec.test_files    = spec.files.grep(%r{^spec/})
   spec.require_paths = ["lib"]
 
