@@ -5,7 +5,11 @@ libyajl2-gem
 [![Code Climate](https://codeclimate.com/github/chef/libyajl2-gem.svg)](https://codeclimate.com/github/chef/libyajl2-gem)
 [![Gem Version](https://badge.fury.io/rb/libyajl2.svg)](http://badge.fury.io/rb/libyajl2)
 
-gem to install the libyajl2 c-library for distributions which do not have it
+gem to install the libyajl2 c-library for distributions which do not have it.
+
+If your distribution does provide yajl, you should set `USE_SYSTEM_LIBYAJL2=1`
+in the environment when you run `gem install` to installing something that
+depends on this Gem.
 
 ## NOTE
 
