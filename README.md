@@ -5,6 +5,14 @@ libyajl2-gem
 [![Code Climate](https://codeclimate.com/github/chef/libyajl2-gem.svg)](https://codeclimate.com/github/chef/libyajl2-gem)
 [![Gem Version](https://badge.fury.io/rb/libyajl2.svg)](http://badge.fury.io/rb/libyajl2)
 
+**Umbrella Project**: [Chef Foundation](https://github.com/chef/chef-oss-practices/blob/master/projects/chef-foundation.md)
+
+**Project State**: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)
+
+**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
+**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
 gem to install the libyajl2 c-library for distributions which do not have it
 
 ## NOTE
