@@ -80,10 +80,10 @@ $(DLLIB): $(OBJS)
 \t$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 install:
-\tmkdir -p #{prefix}/lib
-\tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
-\tmkdir -p #{prefix}/include/yajl
-\tcp yajl/*.h #{prefix}/include/yajl
+\tmkdir -p "#{prefix}/lib"
+\tcp $(DLLIB) "#{prefix}/lib/$(DLLIB)"
+\tmkdir -p "#{prefix}/include/yajl"
+\tcp yajl/*.h "#{prefix}/include/yajl"
 EOF
       end
     else
@@ -115,20 +115,20 @@ EOF
         if windows?
           f.write <<EOF
 install:
-\tmkdir -p #{prefix}/lib
-\tcp libyajl.so #{prefix}/lib/libyajl.so
-\tcp libyajldll.a #{prefix}/lib/libyajldll.a
-\tcp libyajl.def #{prefix}/lib/libyajl.def
-\tmkdir -p #{prefix}/include/yajl
-\tcp yajl/*.h #{prefix}/include/yajl
+\tmkdir -p "#{prefix}/lib"
+\tcp libyajl.so "#{prefix}/lib/libyajl.so"
+\tcp libyajldll.a "#{prefix}/lib/libyajldll.a"
+\tcp libyajl.def "#{prefix}/lib/libyajl.def"
+\tmkdir -p "#{prefix}/include/yajl"
+\tcp yajl/*.h "#{prefix}/include/yajl"
 EOF
         else
           f.write <<EOF
 install:
-\tmkdir -p #{prefix}/lib
-\tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
-\tmkdir -p #{prefix}/include/yajl
-\tcp yajl/*.h #{prefix}/include/yajl
+\tmkdir -p "#{prefix}/lib"
+\tcp $(DLLIB) "#{prefix}/lib/$(DLLIB)"
+\tmkdir -p "#{prefix}/include/yajl"
+\tcp yajl/*.h "#{prefix}/include/yajl"
 EOF
         end
       end
