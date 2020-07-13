@@ -5,7 +5,7 @@ gemspec
 group :development_extras do
   gem "chefstyle"
   gem "reek"
-  gem "test-kitchen", "~> 1.2"
+  gem "test-kitchen", "~> 2.5"
   gem "kitchen-digitalocean"
   gem "kitchen-ec2"
   gem "kitchen-vagrant"
