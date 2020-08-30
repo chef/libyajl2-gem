@@ -28,6 +28,10 @@ module Libyajl2Build
     !!(RUBY_PLATFORM =~ /mswin|mingw|cygwin|windows/)
   end
 
+  def self.aix?
+    !!(RUBY_PLATFORM =~ /-aix/)
+  end
+
   def self.libyajl2_vendor_dir
     LIBYAJL2_VENDOR_DIR
   end
@@ -52,6 +56,15 @@ module Libyajl2Build
       # create the implib on windows
       if windows?
         $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajldll.a -Wl,--output-def,libyajl.def"
+      end
+
+      # The `-shared` flag is required to enable a bunch of shared-library specific behaviours
+      # in the GCC `collect2` wrapper program.
+      #
+      # Ruby's mkmf.rb doesn't pass this flag to GCC when linking on AIX since this commit:
+      # <https://github.com/ruby/ruby/commit/fa0bec050f2743d3e6cdfb1e5fe2c2786ee0c9e>.
+      if aix?
+        $LDFLAGS << " -shared"
       end
     end
 
@@ -98,6 +111,13 @@ EOF
         makefile = IO.read("Makefile")
         makefile.gsub!(/\$\(DEFFILE\)/, "")
         File.open("Makefile", "w+") { |f| f.write(makefile) }
+      end
+
+      # on AIX we have the same issue.
+      if aix?
+        makefile = IO.read("Makefile")
+        makefile.gsub!(/^dldflags\s+=.*$/, '')
+        File.open("Makefile", 'w+') {|f| f.write(makefile) }
       end
 
       system("pwd")
