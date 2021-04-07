@@ -48,11 +48,11 @@ module Libyajl2Build
       # magic flags copied from upstream yajl build system (-std=c99 is necessary for older gcc)
       $CFLAGS << " -std=c99 -pedantic -Wpointer-arith -Wno-format-y2k -Wstrict-prototypes -Wmissing-declarations -Wnested-externs -Wextra  -Wundef -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wno-unused-parameter -Wno-sign-compare -Wmissing-prototypes"
       $CFLAGS << " -O2" # match what the upstream uses for optimization
+    end
 
-      # create the implib on windows
-      if windows?
-        $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajldll.a -Wl,--output-def,libyajl.def"
-      end
+    # create the implib on windows
+    if windows?
+      $LDFLAGS << " -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--out-implib=libyajldll.a -Wl,--output-def,libyajl.def"
     end
 
     $CFLAGS << " -DNDEBUG"
