@@ -19,12 +19,4 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.extensions = Dir["ext/**/extconf.rb"]
-
-  # required for 'rake spec'
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake"
-  # rake-compiler 0.9.2 is required for rbx compiles, and in turn requires rubygems >= 1.8.25
-  spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "ffi", "~> 1.9"
 end

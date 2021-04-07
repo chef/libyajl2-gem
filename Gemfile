@@ -2,17 +2,15 @@ source "https://rubygems.org"
 
 gemspec
 
-group :development_extras do
-  gem "chefstyle"
-  gem "reek"
-  gem "test-kitchen", "~> 2.5"
-  gem "kitchen-digitalocean"
-  gem "kitchen-ec2"
-  gem "kitchen-vagrant"
+group :development do
+  # required for 'rake spec'
+  gem "bundler"
+  gem "rake"
+  gem "rake-compiler"
+  gem "rspec"
+  gem "ffi", "~> 1.9"
 end
 
-platforms :rbx do
-  gem "racc"
-  gem "rubysl", "~> 2.0"
-  gem "psych"
+group :development_extras do
+  gem "chefstyle"
 end
