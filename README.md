@@ -15,6 +15,10 @@ libyajl2-gem
 
 gem to install the libyajl2 c-library for distributions which do not have it
 
+## Building
+
+* `git clone https://github.com/chef/libyajl2-gem --recurse-submodules`
+
 ## NOTE
 
 To build this depends on libgmp and its headers being installed.  On Ubuntu:

@@ -128,7 +128,9 @@ install:
 \tmkdir -p #{prefix}/lib
 \tcp $(DLLIB) #{prefix}/lib/$(DLLIB)
 \tmkdir -p #{prefix}/include/yajl
-\tcp yajl/*.h #{prefix}/include/yajl
+\techo #{prefix}
+\tpwd
+\tcp ../../../../ext/libyajl2/*.h #{prefix}/include/yajl
 EOF
         end
       end
