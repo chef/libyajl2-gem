@@ -64,3 +64,18 @@ make: *** [libyajl.so] Error 1
 
 Which gives the correct error that -lgmp was not found...
 
+## Building (WIP)
+
+### Vendoring yajl
+
+```sh
+    git clone https://github.com/lloyd/yajl
+    cd yajl
+    cp -Rp . [path to this project]/ext/libyajl2/venodr/yajl]
+```
+
+### Prep
+
+```sh
+    bundle exec rake prep --trace
+```
