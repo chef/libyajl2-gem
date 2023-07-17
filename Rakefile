@@ -95,8 +95,6 @@ task :prep do
   # apply patches that haven't yet been pushed upstream
   Dir["#{build_path}/patches/*"].sort.each do |file|
     Dir.chdir vendor_src_path
-    puts `pwd`
-    puts `ls -l`
     sh "patch -p2 --binary < #{file}"
   end
   Dir.chdir build_path
