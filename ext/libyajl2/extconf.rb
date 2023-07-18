@@ -120,7 +120,7 @@ install:
 \tcp libyajldll.a #{prefix}/lib/libyajldll.a
 \tcp libyajl.def #{prefix}/lib/libyajl.def
 \tmkdir -p #{prefix}/include/yajl
-\tcp ../../../../ext/libyajl2/*.h #{prefix}/include/yajl
+\tcp yajl/*.h #{prefix}/include/yajl
 EOF
         else
           f.write <<EOF
@@ -130,7 +130,7 @@ install:
 \tmkdir -p #{prefix}/include/yajl
 \techo #{prefix}
 \tpwd
-\tcp ../../../../ext/libyajl2/*.h #{prefix}/include/yajl
+\tcp yajl/*.h #{prefix}/include/yajl
 EOF
         end
       end
