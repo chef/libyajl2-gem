@@ -64,3 +64,5 @@ make: *** [libyajl.so] Error 1
 
 Which gives the correct error that -lgmp was not found...
 
+# Copyright
+See [COPYRIGHT.md](./COPYRIGHT.md).
